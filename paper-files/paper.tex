@@ -2,26 +2,6 @@
 
 %% ============================================================
 %% Revised manuscript (PRIME arXiv style).
-%%
-%% Experimental numbers filled from the released runs:
-%%   - runs/default/results.json          (full model, 48 train classes:
-%%     ProtoNet headline table + qualitative figures)
-%%   - runs/eval_train_classes_{10..45}/  (training-class sweep for the
-%%     kNN and cosine tables)
-%%
-%% Configuration (configs/default.yaml):
-%%   - input dimension: 225 (x, y, z kept; use_z=true)
-%%   - interpolated sequence length N = 64
-%%   - positional-encoding base: 10000 (standard, Vaswani et al.)
-%%   - 5,000 triplets RE-sampled every epoch; margin 1.0; Adam lr 1e-4;
-%%     batch 64; 100 epochs; dropout 0.1
-%%   - ProtoNet: 600 episodes; kNN/cosine: 40 repetitions
-%%
-%% Remaining TODOs (data not available in the released runs):
-%%   - interpolation ablation: no interpolate=false run exists, so the
-%%     No/Yes ablation was removed rather than fabricated.
-%%   - Comparison-with-prior-work baselines still need verified numbers.
-%%   - Final code URL / hardware description.
 %% ============================================================
 
 \usepackage{PRIMEarxiv}
@@ -71,17 +51,19 @@
     Silvan Ferreira\thanks{These authors contributed equally to this work.}\thanks{Present affiliation: Universidade Federal do Rio Grande do Norte (UFRN), Natal, Brazil.}, Esdras Costa\footnotemark[1], M\'arcio Dahia \\
     CESAR \\
     Recife, Brazil \\
+    \texttt{\{sfsj, esc, mlmd\}@cesar.org} \\
     \And
     Jampierre Rocha \\
     Lenovo \\
     S\~ao Paulo, Brazil \\
+    \texttt{jrocha2@lenovo.com} \\
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Sign language recognition from monocular video or 2D pose sequences is challenging, both because 3D information must be inferred from 2D observations and because the signal is inherently spatiotemporal. Moreover, the large and continually growing vocabulary of signs in production settings makes conventional closed-set classification impractical: adding a class requires new labeled data and retraining. We propose a contrastive Transformer-based model that learns rich representations of body key-point sequences, enabling direct comparison between embedding vectors. These representations support one-shot and few-shot tasks such as classification of signs never seen during training. On the LSA64 dataset, using only 48 classes for representation learning, the model reaches 88.4\,$\pm$\,1.8\% accuracy on 16 held-out classes with as few as eight reference examples per class, and its accuracy improves consistently with the number of training classes and support examples. We release the full training and evaluation code, including distributed training and dataset preparation scripts, to enable exact reproduction.\footnote{Code: \url{https://github.com/ANONYMIZED/slr-fewshot} \textcolor{red}{(TODO: final URL)}}
+Sign language recognition from monocular video or 2D pose sequences is challenging, both because 3D information must be inferred from 2D observations and because the signal is inherently spatiotemporal. Moreover, the large and continually growing vocabulary of signs in production settings makes conventional closed-set classification impractical: adding a class requires new labeled data and retraining. We propose a contrastive Transformer-based model that learns rich representations of body key-point sequences, enabling direct comparison between embedding vectors. These representations support one-shot and few-shot tasks such as classification of signs never seen during training. On the LSA64 dataset, using only 48 classes for representation learning, the model reaches 88.4\,$\pm$\,1.8\% accuracy on 16 held-out classes with as few as eight reference examples per class, and its accuracy improves consistently with the number of training classes and support examples. We release the full training and evaluation code, including distributed training and dataset preparation scripts, to enable exact reproduction.\footnote{Code: \url{https://github.com/esdrascosta/slr-fewshot}}
 \end{abstract}
 
 \keywords{Sign Language \and Transformers \and Contrastive Learning \and Few-shot Learning}

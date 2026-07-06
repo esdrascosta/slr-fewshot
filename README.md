@@ -8,8 +8,8 @@ can finally be reproduced end-to-end.
 
 ## Authors
 
-- **Esdras Costa**\* — joint first author
 - **Silvan Ferreira**\* — joint first author
+- **Esdras Costa**\* — joint first author
 - Márcio Dahia
 - Jampierre Rocha
 
