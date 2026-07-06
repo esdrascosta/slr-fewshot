@@ -1,0 +1,42 @@
+# Reproduction config. Paper-ambiguous values are marked [choice].
+seed: 42
+run_dir: runs/default
+
+data:
+  keypoints_dir: data/lsa64/keypoints   # output of extract_keypoints.py
+  use_z: true          # [choice] true -> 75 kp * 3 = 225 (paper's "Implementation Details");
+                       # false -> 75 kp * 2 = 150 (paper's Section 3.1 "z discarded")
+  seq_len: 64          # [choice] interpolated sequence length N
+  interpolate: true    # temporal interpolation ablation switch
+  n_train_classes: 48  # classes 1..48 train, 49..64 unseen test (paper: 48/16)
+  n_triplets: 5000     # triplets per epoch (paper: 5000 total, resampled here each epoch)
+  num_workers: 4
+
+model:
+  d_model: 128
+  n_heads: 4
+  n_layers: 2
+  dim_feedforward: 1024
+  dropout: 0.1
+  pe_base: 10000.0     # [choice] paper's equations say 1000; standard is 10000
+  proj_dim: 128        # final linear head (Fig. 3); set null to use raw CLS state
+  max_len: 512
+
+train:
+  epochs: 100
+  batch_size: 64       # triplets per batch (per process when distributed)
+  lr: 1.0e-4
+  weight_decay: 0.0
+  margin: 1.0          # triplet margin alpha
+  amp: true            # mixed precision on CUDA
+  log_every: 20
+  val_episodes: 100    # quick 5-way 5-shot protonet validation on unseen classes
+
+eval:
+  n_episodes: 600      # episodes for protonet tables
+  n_repetitions: 40    # repetitions for kNN / cosine tables (paper: 40)
+  ways: [4, 6, 8, 10]
+  shots: [1, 5, 10]
+  n_query: 5
+  knn_ks: [1, 2, 3, 4, 5, 6, 7, 8]
+  cos_ns: [1, 2, 3, 4, 5, 6, 7, 8]

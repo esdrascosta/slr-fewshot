@@ -1,0 +1,47 @@
+# Evaluate the 20-class-trained encoder (Tables 3-4).
+# n_train_classes stays 48 ON PURPOSE: evaluate.py derives the test
+# split from it (classes 49-64), so every sweep point is scored on the
+# SAME 16 held-out classes -- unseen for an encoder trained on 1..20.
+# The model architecture is rebuilt from the checkpoint's stored config.
+#   python -m src.evaluation.evaluate --config configs/eval_train_classes_20.yaml \
+#       --checkpoint runs/train_classes_20/best.pt --methods knn cosine
+seed: 42
+run_dir: runs/eval_train_classes_20
+
+data:
+  keypoints_dir: data/lsa64/keypoints   # output of extract_keypoints.py
+  use_z: true          # 75 kp * 3 = 225 (paper's "Implementation Details")
+  seq_len: 64          # interpolated sequence length N
+  interpolate: true    # temporal interpolation ablation switch
+  n_train_classes: 48
+  n_triplets: 5000     # triplets per epoch (kept FIXED across the sweep)
+  num_workers: 4
+
+model:
+  d_model: 128
+  n_heads: 4
+  n_layers: 2
+  dim_feedforward: 1024
+  dropout: 0.1
+  pe_base: 10000.0     # standard base (paper's equations write 10000)
+  proj_dim: 128        # final linear head (Fig. 3)
+  max_len: 512
+
+train:
+  epochs: 100
+  batch_size: 64       # triplets per batch (per process when distributed)
+  lr: 1.0e-4
+  weight_decay: 0.0
+  margin: 1.0          # triplet margin alpha
+  amp: true            # mixed precision on CUDA
+  log_every: 20
+  val_episodes: 100    # quick 5-way 5-shot protonet validation on unseen classes
+
+eval:
+  n_episodes: 600      # episodes for protonet tables
+  n_repetitions: 40    # repetitions for kNN / cosine tables (paper: 40)
+  ways: [4, 6, 8, 10]
+  shots: [1, 5, 10]
+  n_query: 5
+  knn_ks: [1, 2, 3, 4, 5, 6, 7, 8]
+  cos_ns: [1, 2, 3, 4, 5, 6, 7, 8]
